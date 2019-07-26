@@ -5,7 +5,7 @@ from params import getArgDict
 from util.timeUtils import cd
 import sys
 from TicTacToeGame import TicTacToeGame
-
+import asyncio
 
 argDict = getArgDict(sys.argv)
 
@@ -14,9 +14,24 @@ with open(argDict['config'] if 'config' in argDict else './config.json') as conf
 bot = commands.Bot(command_prefix=".")
 
 
+async def backgroundTask():
+    await bot.wait_until_ready()
+    counter = 0
+    loggingChannel = bot.get_channel(604220508267085824)
+
+    await loggingChannel.send("bot is online")
+    while not bot.is_closed():
+        print(counter)
+        counter += 1
+        await loggingChannel.send(f"bot has been online for {counter} minutes.")
+        await asyncio.sleep(60)
+
+
+
 @bot.event
 async def on_ready():
     await bot.change_presence(activity=discord.Game(name="with myself"))
+    bot.loop.create_task(backgroundTask())
     print(f'We have logged in as {bot.user}')
 
 
@@ -30,7 +45,7 @@ async def on_message(message):
 
 
 def getGameByPlayer(p):
-    return next(filter(lambda x: x.p1 == p or x.p2 == p,  tttList))
+    return next(filter(lambda x: x.p1 == p or x.p2 == p, tttList))
 
 
 def removePlayers(game):
@@ -59,7 +74,8 @@ async def tttforfeit(ctx):
     removePlayers(game)
     if not game.isStarted:
         return await ctx.send(f"{ctx.author} left the game.")
-    await ctx.send(f"Player {ctx.author} has forfeited the game. {game.p1 if game.p1!=ctx.author else game.p2} has won.")
+    await ctx.send(
+        f"Player {ctx.author} has forfeited the game. {game.p1 if game.p1 != ctx.author else game.p2} has won.")
 
 
 @bot.command()
