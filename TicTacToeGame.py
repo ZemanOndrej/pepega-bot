@@ -18,6 +18,9 @@ class TicTacToeGame:
         self.playerWon = 0
         self.isFinished = False
 
+    def isPositionCorrect(self, x: int, y: int):
+        return x < self.xByx and y < self.xByx and x >= 0 and y >= 0 and self.gameBoard[y][x] == 0
+
     def accept(self):
         self.isStarted = True
 
@@ -30,11 +33,14 @@ class TicTacToeGame:
             finStr = "{self.playerWon} won this game!"
         elif self.isFinished:
             finStr = "Its a draw :|"
+        gb = ""
+        for row in self.gameBoard:
+            gb = gb+f" {'|'.join(str(x) for x in row )} \n"
 
         return f"""
 ```turn timer is {self.turnTime/60} minutes
 
-{str(np.array(self.gameBoard))}
+{gb}
 
 player {self.nextPlayer} is going next
 type `.tttplay column row `

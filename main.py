@@ -83,9 +83,21 @@ async def tttplay(ctx, x, y):
 
     if not game.isStarted:
         return await ctx.send("stahp! game is not started yet.")
+
     if ctx.author != game.nextPlayer:
         return await ctx.send("stahp! it's not your turn")
-    game.playTurn(ctx.author, int(x), int(y))
+
+    try:
+        xInt = int(x)
+        yInt = int(y)
+    except:
+        return await ctx.send("Wrong input!")
+
+    if not game.isPositionCorrect(xInt, yInt):
+        return await ctx.send("this position is not correct or free!")
+
+    game.playTurn(ctx.author, xInt, yInt)
+
     if game.isFinished:
         removePlayers(game)
         tttList.remove(game)
@@ -96,16 +108,20 @@ async def tttplay(ctx, x, y):
 async def tictactoe(ctx, p2: discord.Member):
     if p2 == bot.user:
         return await ctx.send("Im too :Pepega: for this game.")
+    if p2 == ctx.author:
+        return await ctx.send('you cant inv yourself :NotLikeThis:')
+
     p1InGame = ctx.author in players
     p2InGame = p2 in players
+
     if p1InGame or p2InGame:
         return await ctx.send(f'{ctx.author if p1InGame else p2} is already in game!')
+
     players.extend([p2, ctx.author])
+
     if ctx.author is not p2:
         tttList.append(TicTacToeGame(ctx.author, p2))
-        await ctx.send(f'@{ctx.author} invited you to tictactoe @{p2} type \'.tttaccept\' or \'.tttreject\' ')
-    else:
-        await ctx.send('you cant inv yourself :NotLikeThis:')
+        await ctx.send(f'<@{ctx.author.id}> invited you to tictactoe <@{p2.id}> type \'.tttaccept\' or \'.tttreject\' ')
 
 
 @bot.command()
@@ -118,6 +134,8 @@ async def countdown(ctx, *args):
             countStart = int(args[0])
     except:
         return await ctx.send("wrong input")
+    if countStart > 20:
+        return await ctx.send("number is too big!")
 
     await cd(ctx.send, countStart, 1, "countdown has started", "it is finished")
 
@@ -125,5 +143,13 @@ async def countdown(ctx, *args):
 @bot.command()
 async def ping(ctx):
     await ctx.send('pong')
+
+
+@bot.command()
+async def tttboard(ctx):
+    if ctx.author not in players:
+        return await ctx.send(f"You are not in game :(. To start a new game type `.tictactoe @some_user`")
+    game = getGameByPlayer(ctx.author)
+    await ctx.send(str(game))
 
 bot.run(d["token"])
