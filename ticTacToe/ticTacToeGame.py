@@ -4,14 +4,14 @@ import datetime
 
 
 class TicTacToeGame:
-    def __init__(self, p1, p2, xByx: int = 3, winCondition: int = 3, turnTime: int = 5*60):
+    def __init__(self, p1, p2, xByx: int = 3, winCondition: int = 3, turnTime: int = 5 * 60):
         self.timeStarted = datetime.datetime.now()
         self.p1 = p1
         self.p2 = p2
         self.winCondition = winCondition
         self.timeLastTurn = datetime.datetime.now()
         self.xByx = xByx
-        self.gameBoard = [[0 for x in range(xByx)]for x in range(xByx)]
+        self.gameBoard = [[0 for x in range(xByx)] for x in range(xByx)]
         self.nextPlayer = p1 if random.random() < 0.5 else p2
         self.isStarted = False
         self.turnTime = turnTime
@@ -30,22 +30,23 @@ class TicTacToeGame:
     def __str__(self):
         finStr = ""
         if self.isFinished and self.playerWon != 0:
-            finStr = "{self.playerWon} won this game!"
+            finStr = f"{self.playerWon} won this game!"
         elif self.isFinished:
             finStr = "Its a draw :|"
         gb = ""
         for row in self.gameBoard:
-            gb = gb+f" {'|'.join(str(x) for x in row )} \n"
+            gb = gb + f" {'|'.join(str(x) for x in row)} \n"
 
         return f"""
-```turn timer is {self.turnTime/60} minutes
+```turn timer is {self.turnTime / 60} minutes
 
 {gb}
 
-player {self.nextPlayer} is going next
-type `.tttplay column row `
+1= {self.p1} 2= {self.p2}
+type `.tttplay column(0-{self.xByx - 1}) row(0-{self.xByx - 1}) 
 {finStr}
 ```
+player <@{self.nextPlayer.id}> is going next
 """
 
     def playTurn(self, p, x, y):
@@ -53,8 +54,10 @@ type `.tttplay column row `
         self.gameBoard[y][x] = symbol
         self.timeLastTurn = datetime.datetime.now()
 
-        self.playerWon = self._checkWin()
-        self.isFinished = self.playerWon != 0 and any(
+        playerWonNumber = self._checkWin()
+        self.playerWon = self.p1 if playerWonNumber == 1 else self.p2 if playerWonNumber == 2 else None
+
+        self.isFinished = playerWonNumber != 0 or any(
             0 in subl for subl in self.gameBoard)
 
         if not self.isFinished:
@@ -72,8 +75,8 @@ type `.tttplay column row `
 def checkDiagonals(board):
     if len(set([board[i][i] for i in range(len(board))])) == 1:
         return board[0][0]
-    if len(set([board[i][len(board)-i-1] for i in range(len(board))])) == 1:
-        return board[0][len(board)-1]
+    if len(set([board[i][len(board) - i - 1] for i in range(len(board))])) == 1:
+        return board[0][len(board) - 1]
     return 0
 
 
