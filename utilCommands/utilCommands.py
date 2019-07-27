@@ -2,16 +2,20 @@ import asyncio
 
 import discord
 from discord.ext import commands
-
+import json
+from pathlib import Path
 from util.params import getArgDict
 from util.timeUtils import cd
 
+from config import CONFIG
+
 
 class UtilCommands(commands.Cog):
-    def __init__(self, bot,config):
+    def __init__(self, bot):
         self.bot = bot
+        self.leaderBoardPath = Path(
+            CONFIG['leaderboardPath'] if CONFIG['leaderboardPath'] else './leaderboard.json')
         self.leaderBoard = {}
-        self.config = config
 
     @commands.command(name='countdown')
     async def countdown(self, ctx, *args):
@@ -62,8 +66,11 @@ class UtilCommands(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print('tood')
-        #TODO
+        if not self.leaderBoardPath.is_file():
+            self.leaderBoard = {}
+        else:
+            with open(self.leaderBoardPath) as file:
+                self.leaderBoard = json.loads(file.read())
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -72,3 +79,8 @@ class UtilCommands(commands.Cog):
             self.leaderBoard[authorId] += 1
         else:
             self.leaderBoard[authorId] = 1
+        self.saveLeaderboard()
+
+    def saveLeaderboard(self):
+        with open(self.leaderBoardPath, '+w') as file:
+            file.write(json.dumps(self.leaderBoard))
