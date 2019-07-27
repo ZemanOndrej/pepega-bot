@@ -25,7 +25,3 @@ class Events(commands.Cog):
         await self.bot.change_presence(activity=discord.Game(name="with myself"))
         self.bot.loop.create_task(self.backgroundTask())
         print(f'We have logged in as {self.bot.user}')
-
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        await self.bot.process_commands(message)

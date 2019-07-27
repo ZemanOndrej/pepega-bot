@@ -8,10 +8,12 @@ from util.timeUtils import cd
 
 
 class UtilCommands(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot,config):
         self.bot = bot
+        self.leaderBoard = {}
+        self.config = config
 
-    @commands.command()
+    @commands.command(name='countdown')
     async def countdown(self, ctx, *args):
         countStart = 0
         try:
@@ -26,11 +28,11 @@ class UtilCommands(commands.Cog):
 
         await cd(ctx.send, countStart, 1, "countdown has started", "it is finished")
 
-    @commands.command()
+    @commands.command(name='ping')
     async def ping(self, ctx):
         await ctx.send('pong')
 
-    @commands.command()
+    @commands.command(name='purge')
     async def purge(self, ctx, arg):
         if arg.isdigit():
             number = int(arg) + 1
@@ -49,3 +51,24 @@ class UtilCommands(commands.Cog):
                 except discord.errors.NoMoreItems:
                     break
                 await asyncio.sleep(3)
+
+    @commands.command(name="leaderboard")
+    async def leaderBoard(self, ctx):
+        parsedLeaderboard = ''
+        for key in sorted(self.leaderBoard, key=self.leaderBoard.get, reverse=True):
+            parsedLeaderboard += f"{key}: {self.leaderBoard[key]}\n"
+
+        await ctx.send(f"```{parsedLeaderboard}```")
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        print('tood')
+        #TODO
+
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        authorId = str(message.author)
+        if authorId in self.leaderBoard:
+            self.leaderBoard[authorId] += 1
+        else:
+            self.leaderBoard[authorId] = 1
