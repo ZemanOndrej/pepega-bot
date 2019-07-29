@@ -1,8 +1,8 @@
 from discord.ext import commands
-from utilCommands.events import Events
-from utilCommands.utilCommands import UtilCommands
-from ticTacToe.ticTacToe import TicTacToe
-from config import CONFIG
+from src.utilCommands.events import Events
+from src.utilCommands.utilCommands import UtilCommands
+from src.ticTacToe.ticTacToe import TicTacToe
+from src.config import CONFIG
 
 bot = commands.Bot(command_prefix=".")
 

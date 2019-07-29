@@ -3,10 +3,10 @@ import discord
 from discord.ext import commands
 import json
 from pathlib import Path
-from util.params import getArgDict
-from util.timeUtils import cd
+from src.util.params import getArgDict
+from src.util.timeUtils import cd
 
-from config import CONFIG
+from src.config import CONFIG
 
 
 class UtilCommands(commands.Cog):
