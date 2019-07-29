@@ -1,5 +1,4 @@
 import asyncio
-
 import discord
 from discord.ext import commands
 import json
@@ -71,6 +70,7 @@ class UtilCommands(commands.Cog):
         else:
             with open(self.leaderBoardPath) as file:
                 self.leaderBoard = json.loads(file.read())
+        self.bot.loop.create_task(self.backgroundSaving())
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -79,7 +79,18 @@ class UtilCommands(commands.Cog):
             self.leaderBoard[authorId] += 1
         else:
             self.leaderBoard[authorId] = 1
+
+    @commands.Cog.listener()
+    async def on_disconnect(self):
+        print('pepega was disconnected')
         self.saveLeaderboard()
+
+    async def backgroundSaving(self):
+        await self.bot.wait_until_ready()
+        while not self.bot.is_closed():
+            await asyncio.sleep(30)
+            print('saving leaderboard')
+            self.saveLeaderboard()
 
     def saveLeaderboard(self):
         with open(self.leaderBoardPath, '+w') as file:
