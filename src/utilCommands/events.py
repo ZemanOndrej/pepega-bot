@@ -16,8 +16,8 @@ class Events(commands.Cog):
         await loggingChannel.send("bot is online")
         while not self.bot.is_closed():
             await asyncio.sleep(60 * 5)
-            print(counter)
             counter += 5
+            print(counter)
             await loggingChannel.send(f"bot has been online for {counter} minutes.")
 
     @commands.Cog.listener()

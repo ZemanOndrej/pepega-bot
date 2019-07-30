@@ -1,12 +1,14 @@
 import asyncio
-import discord
-from discord.ext import commands
 import json
 from pathlib import Path
-from src.util.params import getArgDict
-from src.util.timeUtils import cd
+
+import discord
+from discord.ext import commands
+from discord.ext.commands import has_permissions
 
 from src.config import CONFIG
+from src.util.params import getArgDict
+from src.util.timeUtils import cd
 
 
 class UtilCommands(commands.Cog):
@@ -36,6 +38,7 @@ class UtilCommands(commands.Cog):
         await ctx.send('pong')
 
     @commands.command(name='purge')
+    @has_permissions(administrator=True)
     async def purge(self, ctx, arg):
         if arg.isdigit():
             number = int(arg) + 1
