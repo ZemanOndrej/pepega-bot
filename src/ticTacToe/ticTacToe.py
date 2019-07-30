@@ -10,6 +10,9 @@ class TicTacToe(commands.Cog):
         self.players = []
         self.tttList = []
 
+    def _prefix(self):
+        return self.bot.command_prefix
+
     def getGameByPlayer(self, p):
         return next(filter(lambda x: x.p1 == p or x.p2 == p, self.tttList))
 
@@ -20,7 +23,10 @@ class TicTacToe(commands.Cog):
     @commands.command(name="tttaccept")
     async def accept(self, ctx):
         if ctx.author not in self.players:
-            return await ctx.send(f"You have nothing to accept :(. To start a new game type `.tictactoe @some_user`")
+            return await ctx.send(
+                f"""
+                You have nothing to accept :(. To start a new game type `{self._prefix()}tictactoe @some_user`
+                """)
 
         game = self.getGameByPlayer(ctx.author)
         if game.p2 == ctx.author:
@@ -32,21 +38,32 @@ class TicTacToe(commands.Cog):
     @commands.command(name='tttforfeit')
     async def forfeit(self, ctx):
         if ctx.author not in self.players:
-            return await ctx.send(f"You have nothing to forfeit :(. To start a new game type `.tictactoe @some_user`")
+            return await ctx.send(
+                f"""
+            You have nothing to forfeit :(. To start a new game type `{self._prefix()}tictactoe @some_user`
+                """)
         game = self.getGameByPlayer(ctx.author)
         self.removePlayers(game)
         if not game.isStarted:
             return await ctx.send(f"{ctx.author} left the game.")
         await ctx.send(
-            f"Player {ctx.author} has forfeited the game. {game.p1 if game.p1 != ctx.author else game.p2} has won.")
+            f"""
+        Player {ctx.author} has forfeited the game. {game.p1 if game.p1 != ctx.author else game.p2} has won.
+            """)
 
     @commands.command(name='tttreject')
     async def reject(self, ctx):
         if ctx.author not in self.players:
-            return await ctx.send(f"You have nothing to reject :(. To start a new game type `.tictactoe @some_user`")
+            return await ctx.send(
+                f"""
+                You have nothing to reject :(. To start a new game type `{self._prefix()}tictactoe @some_user`
+                """)
         game = self.getGameByPlayer(ctx.author)
         if game.isStarted:
-            return await ctx.send("Game has already started. If you want to leave the game type `.tttforfeit`")
+            return await ctx.send(
+                f"""
+                Game has already started. If you want to leave the game type `{self._prefix()}tttforfeit`
+                """)
         if game.p2 == ctx.author:
             self.removePlayers(game)
             self.tttList.remove(game)
@@ -55,14 +72,17 @@ class TicTacToe(commands.Cog):
     @commands.command(name='tttplay')
     async def play(self, ctx, x, y):
         if ctx.author not in self.players:
-            return await ctx.send(f"You are not in game :(. To start a new game type `.tictactoe @some_user`")
+            return await ctx.send(
+                f"""
+            You are not in game :(. To start a new game type `{self._prefix()}tictactoe @some_user`
+                """)
         game = self.getGameByPlayer(ctx.author)
 
         if not game.isStarted:
-            return await ctx.send("stahp! game is not started yet.")
+            return await ctx.send("Stahp! game is not started yet.")
 
         if ctx.author != game.nextPlayer:
-            return await ctx.send("stahp! it's not your turn")
+            return await ctx.send("Stahp! it's not your turn")
 
         try:
             xInt = int(x)
@@ -78,14 +98,17 @@ class TicTacToe(commands.Cog):
         if game.isFinished:
             self.removePlayers(game)
             self.tttList.remove(game)
-        await ctx.send(game)
+        await ctx.send(
+            f"""
+            {str(game)}type `{self._prefix()}tttplay column(0-{game.xByx - 1}) row(0-{game.xByx - 1})
+            """)
 
     @commands.command(name='tttstart')
     async def start(self, ctx, p2: discord.Member):
         if p2 == self.bot.user:
             return await ctx.send("Im too :Pepega: for this game.")
         if p2 == ctx.author:
-            return await ctx.send('you cant inv yourself :NotLikeThis:')
+            return await ctx.send('You cant inv yourself :NotLikeThis:')
 
         p1InGame = ctx.author in self.players
         p2InGame = p2 in self.players
@@ -98,11 +121,18 @@ class TicTacToe(commands.Cog):
         if ctx.author is not p2:
             self.tttList.append(TicTacToeGame(ctx.author, p2))
             await ctx.send(
-                f'<@{ctx.author.id}> invited you to tictactoe <@{p2.id}> type \'.tttaccept\' or \'.tttreject\' ')
+                f"""
+<@{ctx.author.id}> invited you to tictactoe <@{p2.id}>\ntype `'{self._prefix()}tttaccept` or `{self._prefix()}tttreject`
+                """)
 
     @commands.command(name='tttboard')
     async def getBoard(self, ctx):
         if ctx.author not in self.players:
-            return await ctx.send(f"You are not in game :(. To start a new game type `.tictactoe @some_user`")
+            return await ctx.send(f"""
+            You are not in game :(. To start a new game type `{self._prefix()}tictactoe @some_user`
+            """)
         game = self.getGameByPlayer(ctx.author)
-        await ctx.send(str(game))
+        await ctx.send(
+            f"""
+            {str(game)}type `{self._prefix()}tttplay column(0-{game.xByx - 1}) row(0-{game.xByx - 1})
+            """)

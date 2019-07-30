@@ -9,6 +9,9 @@ class RoleReaction(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    def _prefix(self):
+        return self.bot.command_prefix
+
     @commands.command(name="roleReactionChannel")
     async def addServerChannel(self, ctx, channel: discord.TextChannel):
         saveServer(serverId=str(ctx.message.guild.id), channelId=channel.id)
@@ -24,8 +27,8 @@ class RoleReaction(commands.Cog):
                                reaction=reaction)
         except EntityNotFound:
             return await ctx.send(
-                """
-                This dc server doesnt have roleReaction channel setup type `.roleReactionChannel #channel`
+                f"""
+                This dc server doesnt have roleReaction channel setup type `{self._prefix()}roleReactionChannel #channel`
                 """)
 
         print(f'role reaction {role}/{reaction} id in {ctx.message.guild}')

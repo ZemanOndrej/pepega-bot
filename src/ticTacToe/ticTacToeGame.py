@@ -1,6 +1,7 @@
-import numpy as np
-import random
 import datetime
+import random
+
+import numpy as np
 
 
 class TicTacToeGame:
@@ -17,9 +18,14 @@ class TicTacToeGame:
         self.turnTime = turnTime
         self.playerWon = 0
         self.isFinished = False
+        self.charLookup = {
+            0: "-",
+            1: "o",
+            2: "x",
+        }
 
     def isPositionCorrect(self, x: int, y: int):
-        return x < self.xByx and y < self.xByx and x >= 0 and y >= 0 and self.gameBoard[y][x] == 0
+        return self.xByx > x >= 0 and self.xByx > y >= 0 and self.gameBoard[y][x] == 0
 
     def accept(self):
         self.isStarted = True
@@ -35,18 +41,16 @@ class TicTacToeGame:
             finStr = "Its a draw :|"
         gb = ""
         for row in self.gameBoard:
-            gb = gb + f" {'|'.join(str(x) for x in row)} \n"
+            gb = gb + f" {'|'.join(self.charLookup[x] for x in row)} \n"
 
         return f"""
-```turn timer is {self.turnTime / 60} minutes
-
+    ```
+Turn timer is {self.turnTime / 60} minutes \n
 {gb}
-
-1= {self.p1} 2= {self.p2}
-type `.tttplay column(0-{self.xByx - 1}) row(0-{self.xByx - 1}) 
-{finStr}
-```
-player <@{self.nextPlayer.id}> is going next
+{self.charLookup[1]}= {self.p1}; {self.charLookup[2]}= {self.p2}
+{finStr}\
+```\
+Player <@{self.nextPlayer.id}> is going next
 """
 
     def playTurn(self, p, x, y):

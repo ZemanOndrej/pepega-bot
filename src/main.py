@@ -6,7 +6,7 @@ from src.ticTacToe.ticTacToe import TicTacToe
 from src.utilCommands.events import Events
 from src.utilCommands.utilCommands import UtilCommands
 
-bot = commands.Bot(command_prefix=".")
+bot = commands.Bot(command_prefix=CONFIG["default_prefix"])
 
 bot.add_cog(Events(bot))
 bot.add_cog(UtilCommands(bot))
