@@ -53,19 +53,19 @@ Turn timer is {self.turnTime / 60} minutes \n
 Player <@{self.nextPlayer.id}> is going next
 """
 
-    def playTurn(self, p, x, y):
-        symbol = 1 if p == self.p1 else 2
+    def playTurn(self, player, x, y):
+        symbol = 1 if player == self.p1 else 2
         self.gameBoard[y][x] = symbol
         self.timeLastTurn = datetime.datetime.now()
 
         playerWonNumber = self._checkWin()
         self.playerWon = self.p1 if playerWonNumber == 1 else self.p2 if playerWonNumber == 2 else None
 
-        self.isFinished = playerWonNumber != 0 or any(
+        self.isFinished = playerWonNumber != 0 or not any(
             0 in subl for subl in self.gameBoard)
 
         if not self.isFinished:
-            self.nextPlayer = self.p1 if p == self.p2 else self.p2
+            self.nextPlayer = self.p1 if player == self.p2 else self.p2
 
     def _checkWin(self):
         # transposition to check rows, then columns
@@ -86,6 +86,6 @@ def checkDiagonals(board):
 
 def checkRows(board):
     for row in board:
-        if len(set(row)) == 1:
+        if len(set(row)) == 1 and row[0] != 0:
             return row[0]
     return 0

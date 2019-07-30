@@ -20,6 +20,11 @@ class TicTacToe(commands.Cog):
         self.players.remove(game.p1)
         self.players.remove(game.p2)
 
+    def getGameStr(self, game):
+        return f"""
+            {str(game)}type `{self._prefix()}tttplay column(0-{game.xByx - 1}) row(0-{game.xByx - 1})`
+                """
+
     @commands.command(name="tttaccept")
     async def accept(self, ctx):
         if ctx.author not in self.players:
@@ -31,7 +36,7 @@ class TicTacToe(commands.Cog):
         game = self.getGameByPlayer(ctx.author)
         if game.p2 == ctx.author:
             game.accept()
-            return await ctx.send(game)
+            return await ctx.send(self.getGameStr(game))
 
         await ctx.send(f"Player {game.p2} has to accept the game, not you!")
 
@@ -45,7 +50,7 @@ class TicTacToe(commands.Cog):
         game = self.getGameByPlayer(ctx.author)
         self.removePlayers(game)
         if not game.isStarted:
-            return await ctx.send(f"{ctx.author} left the game.")
+            return await ctx.send(f"{ctx.author} left the game with {game.p1 if game.p1 != ctx.author else game.p2}.")
         await ctx.send(
             f"""
         Player {ctx.author} has forfeited the game. {game.p1 if game.p1 != ctx.author else game.p2} has won.
@@ -88,7 +93,7 @@ class TicTacToe(commands.Cog):
             xInt = int(x)
             yInt = int(y)
         except:
-            return await ctx.send("Wrong input!")
+            return await ctx.send("Wrong input: example input `.tttplay 0 0`!")
 
         if not game.isPositionCorrect(xInt, yInt):
             return await ctx.send("this position is not correct or free!")
@@ -98,10 +103,7 @@ class TicTacToe(commands.Cog):
         if game.isFinished:
             self.removePlayers(game)
             self.tttList.remove(game)
-        await ctx.send(
-            f"""
-            {str(game)}type `{self._prefix()}tttplay column(0-{game.xByx - 1}) row(0-{game.xByx - 1})
-            """)
+        return await ctx.send(self.getGameStr(game))
 
     @commands.command(name='tttstart')
     async def start(self, ctx, p2: discord.Member):
@@ -118,11 +120,11 @@ class TicTacToe(commands.Cog):
 
         self.players.extend([p2, ctx.author])
 
-        if ctx.author is not p2:
-            self.tttList.append(TicTacToeGame(ctx.author, p2))
-            await ctx.send(
-                f"""
-<@{ctx.author.id}> invited you to tictactoe <@{p2.id}>\ntype `'{self._prefix()}tttaccept` or `{self._prefix()}tttreject`
+        self.tttList.append(TicTacToeGame(ctx.author, p2))
+        await ctx.send(
+            f"""
+<@{ctx.author.id}> invited you to tictactoe <@{p2.id}>
+type `'{self._prefix()}tttaccept` or `{self._prefix()}tttreject`
                 """)
 
     @commands.command(name='tttboard')
@@ -132,7 +134,4 @@ class TicTacToe(commands.Cog):
             You are not in game :(. To start a new game type `{self._prefix()}tictactoe @some_user`
             """)
         game = self.getGameByPlayer(ctx.author)
-        await ctx.send(
-            f"""
-            {str(game)}type `{self._prefix()}tttplay column(0-{game.xByx - 1}) row(0-{game.xByx - 1})
-            """)
+        return await ctx.send(self.getGameStr(game))
