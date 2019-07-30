@@ -1,0 +1,20 @@
+version: "3"
+
+networks:
+  example:
+
+services:
+  db:
+    container_name: dc-bot-pg-db
+    build:
+      dockerfile: Dockerfile
+      context: .
+    environment:
+      POSTGRES_USER: docker
+      POSTGRES_PW: docker
+      POSTGRES_DB: docker
+      POSTGRES_URL: localhost
+    networks:
+      - example
+    ports:
+      - "5432:5432"
