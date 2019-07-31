@@ -15,7 +15,7 @@ DB_PW = getEnvVariable("DB_PW")
 DB_DB = getEnvVariable("DB_DB")
 DB_HOST = getEnvVariable("DB_HOST")
 
-DB_URL = f'postgresql+psycopg2://{DB_USER}:{DB_PW}@{DB_HOST}/{DB_DB}'
+DB_URL = f'postgresql+psycopg2://{DB_USER}:{DB_PW}@{DB_HOST}:{DB_PORT}/{DB_DB}'
 
 counter = 0
 counter_max = 20
