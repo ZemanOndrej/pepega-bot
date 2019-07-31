@@ -6,7 +6,7 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import has_permissions
 
-from config import CONFIG
+from util.params import getEnvVariable
 from util.params import getArgDict
 from util.timeUtils import cd
 
@@ -14,8 +14,13 @@ from util.timeUtils import cd
 class UtilCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.leaderBoardPath = Path(
-            CONFIG['leaderboardPath'] if CONFIG['leaderboardPath'] else './leaderboard.json')
+        try:
+            path = getEnvVariable('LEADERBOARD_PATH')
+        except KeyError:
+            print('leaderboard path set to default"./leaderboard.json"')
+            path = './leaderboard.json'
+
+        self.leaderBoardPath = Path(path)
         self.leaderBoard = {}
 
     @commands.command(name='countdown')

@@ -1,27 +1,19 @@
-import os
 from sqlalchemy.engine import create_engine
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
+from util.params import getEnvVariable
 import psycopg2
 import time
 
 Base = declarative_base()
 
 
-def get_env_variable(name):
-    try:
-        return os.environ[name]
-    except KeyError:
-        message = f"Expected environment variable '{name}' not set."
-        raise Exception(message)
-
-
-DB_PORT = get_env_variable("DB_PORT")
-DB_USER = get_env_variable("DB_USER")
-DB_PW = get_env_variable("DB_PW")
-DB_DB = get_env_variable("DB_DB")
-DB_HOST = get_env_variable("DB_HOST")
+DB_PORT = getEnvVariable("DB_PORT")
+DB_USER = getEnvVariable("DB_USER")
+DB_PW = getEnvVariable("DB_PW")
+DB_DB = getEnvVariable("DB_DB")
+DB_HOST = getEnvVariable("DB_HOST")
 
 DB_URL = f'postgresql+psycopg2://{DB_USER}:{DB_PW}@{DB_HOST}/{DB_DB}'
 

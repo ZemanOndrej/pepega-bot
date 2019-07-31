@@ -5,7 +5,6 @@ WORKDIR /app
 
 COPY src src
 COPY ./requirements.txt .
-COPY ./config.json .
 
 RUN pip install -r requirements.txt
-ENTRYPOINT ["python", "./src/main.py", "--config config.json"]
+ENTRYPOINT ["python", "./src/main.py"]

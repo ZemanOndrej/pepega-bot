@@ -18,11 +18,13 @@ services:
   bot:
     container_name: pepega-bot
     environment:
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_DB: docker
+      DB_PORT: 5421
       DB_USER: docker
       DB_PW: docker
+      DB_DB: docker
+      DB_HOST: db
+    env_file:
+      - prod.env
     networks:
       - example
     depends_on:

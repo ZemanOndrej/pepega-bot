@@ -1,3 +1,5 @@
+import os
+
 def getArgDict(argv: list):
     argDict = {}
     for i, arg in enumerate(argv):
@@ -10,3 +12,10 @@ def getArgDict(argv: list):
             else:
                 argDict[parsedArg] = True
     return argDict
+
+def getEnvVariable(name):
+    try:
+        return os.environ[name]
+    except KeyError:
+        message = f"Expected environment variable '{name}' not set."
+        raise Exception(message)
