@@ -1,7 +1,7 @@
 import sys
 import json
 
-from src.util.params import getArgDict
+from util.params import getArgDict
 
 argDict = getArgDict(sys.argv)
 

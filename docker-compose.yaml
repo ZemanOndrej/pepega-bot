@@ -1,20 +1,32 @@
-version: "3"
-
+version: '3'
 networks:
   example:
 
 services:
   db:
-    container_name: dc-bot-pg-db
-    build:
-      dockerfile: Dockerfile
-      context: .
+    container_name: pepega-bot-pg-db
+    hostname: db
+    image: postgres:10-alpine
     environment:
       POSTGRES_USER: docker
-      POSTGRES_PW: docker
+      POSTGRES_PASSWORD: docker
       POSTGRES_DB: docker
-      POSTGRES_URL: localhost
     networks:
       - example
     ports:
-      - "5432:5432"
+      - '5432:5432'
+  bot:
+    container_name: pepega-bot
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DB: docker
+      DB_USER: docker
+      DB_PW: docker
+    networks:
+      - example
+    depends_on:
+      - db
+    build:
+      dockerfile: Dockerfile
+      context: .

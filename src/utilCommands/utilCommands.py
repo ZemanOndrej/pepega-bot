@@ -6,9 +6,9 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import has_permissions
 
-from src.config import CONFIG
-from src.util.params import getArgDict
-from src.util.timeUtils import cd
+from config import CONFIG
+from util.params import getArgDict
+from util.timeUtils import cd
 
 
 class UtilCommands(commands.Cog):

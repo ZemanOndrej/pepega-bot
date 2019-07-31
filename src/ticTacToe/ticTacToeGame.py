@@ -1,8 +1,6 @@
 import datetime
 import random
 
-import numpy as np
-
 
 class TicTacToeGame:
     def __init__(self, p1, p2, xByx: int = 3, winCondition: int = 3, turnTime: int = 5 * 60):
@@ -69,7 +67,7 @@ Player <@{self.nextPlayer.id}> is going next
 
     def _checkWin(self):
         # transposition to check rows, then columns
-        for newBoard in [self.gameBoard, np.transpose(self.gameBoard)]:
+        for newBoard in [self.gameBoard, [*zip(*self.gameBoard)]]:
             result = checkRows(newBoard)
             if result:
                 return result

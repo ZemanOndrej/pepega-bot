@@ -1,4 +1,4 @@
-from src.db.db import Session, Server, RoleReaction
+from db.db import Session, Server, RoleReaction
 
 
 class EntityNotFound(Exception):

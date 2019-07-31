@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from src.ticTacToe.ticTacToeGame import TicTacToeGame
+from ticTacToe.ticTacToeGame import TicTacToeGame
 
 
 class TicTacToe(commands.Cog):

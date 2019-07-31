@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from src.db.roleReactionRepo import saveServer, createRoleReaction, getServerById, getReactionRoleByServerAndReaction, \
+from db.roleReactionRepo import saveServer, createRoleReaction, getServerById, getReactionRoleByServerAndReaction, \
     EntityNotFound
 
 
