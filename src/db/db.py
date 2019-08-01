@@ -5,38 +5,50 @@ from sqlalchemy.orm import relationship, sessionmaker
 from util.params import getEnvVariable
 import psycopg2
 import time
-
-Base = declarative_base()
-
+import sys
 
 DB_PORT = getEnvVariable("DB_PORT")
 DB_USER = getEnvVariable("DB_USER")
 DB_PW = getEnvVariable("DB_PW")
 DB_DB = getEnvVariable("DB_DB")
 DB_HOST = getEnvVariable("DB_HOST")
-
 DB_URL = f'postgresql+psycopg2://{DB_USER}:{DB_PW}@{DB_HOST}:{DB_PORT}/{DB_DB}'
+print(DB_URL)
+Base = declarative_base()
 
-counter = 0
-counter_max = 20
-sleep_time = 5
 
-while counter < counter_max:
+def getEngine():
+    counter = 0
+    counter_max = 20
+    sleep_time = 5
+    while counter < counter_max:
+        try:
+            counter += 1
+            engine = create_engine(DB_URL)
+            connection = engine.connect()
+            print('connected to db successfully.')
+            return engine
+        except:
+            time.sleep(sleep_time)
+            if counter == counter_max:
+                print(
+                    f"db is unavailable for {counter_max * sleep_time} seconds, restart the application")
+                sys.exit(1)
+            else:
+                print(
+                    f"({counter}/20) db is unavailable, reconnecting to server in few seconds...")
+
+
+def initDb():
     try:
-        counter += 1
-        engine = create_engine(DB_URL)
-        connection = engine.connect()
-        print('connected to db successfully.')
+        recreate = getEnvVariable("RECREATE_DB")
     except:
-        time.sleep(sleep_time)
-        if counter == counter_max:
-            print(
-                f"db is unavailable for {counter_max * sleep_time} seconds, restart the application")
-        else:
-            print(
-                f"({counter}/20) db is unavailable, reconnecting to server in few seconds...")
-    else:
-        break
+        recreate = False
+
+    print(f"DB initialization recreate={recreate}")
+    if recreate:
+        Base.metadata.drop_all(engine)
+    Base.metadata.create_all(engine)
 
 
 class Server(Base):
@@ -56,6 +68,6 @@ class RoleReaction(Base):
     server_id = Column(String(50), ForeignKey('servers.id'))
 
 
-Base.metadata.drop_all(engine)
-Base.metadata.create_all(engine)
+engine = getEngine()
+initDb()
 Session = sessionmaker(bind=engine)

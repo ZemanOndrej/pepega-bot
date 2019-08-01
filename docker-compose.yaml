@@ -18,7 +18,7 @@ services:
   bot:
     container_name: pepega-bot
     environment:
-      DB_PORT: 5421
+      DB_PORT: 5432
       DB_USER: docker
       DB_PW: docker
       DB_DB: docker
