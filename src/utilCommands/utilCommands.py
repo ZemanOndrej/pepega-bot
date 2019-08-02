@@ -14,14 +14,6 @@ from util.timeUtils import cd
 class UtilCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        try:
-            path = getEnvVariable('LEADERBOARD_PATH')
-        except KeyError:
-            print('leaderboard path set to default"./leaderboard.json"')
-            path = './leaderboard.json'
-
-        self.leaderBoardPath = Path(path)
-        self.leaderBoard = {}
 
     @commands.command(name='countdown')
     async def countdown(self, ctx, *args):
@@ -63,43 +55,6 @@ class UtilCommands(commands.Cog):
                     break
                 await asyncio.sleep(3)
 
-    @commands.command(name="leaderboard")
-    async def leaderBoard(self, ctx):
-        parsedLeaderboard = ''
-        for key in sorted(self.leaderBoard, key=self.leaderBoard.get, reverse=True):
-            parsedLeaderboard += f"{key}: {self.leaderBoard[key]}\n"
-
-        await ctx.send(f"```{parsedLeaderboard}```")
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        if not self.leaderBoardPath.is_file():
-            self.leaderBoard = {}
-        else:
-            with open(self.leaderBoardPath) as file:
-                self.leaderBoard = json.loads(file.read())
-        self.bot.loop.create_task(self.backgroundSaving())
-
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        authorId = str(message.author)
-        if authorId in self.leaderBoard:
-            self.leaderBoard[authorId] += 1
-        else:
-            self.leaderBoard[authorId] = 1
-
     @commands.Cog.listener()
     async def on_disconnect(self):
         print('pepega was disconnected')
-        self.saveLeaderboard()
-
-    async def backgroundSaving(self):
-        await self.bot.wait_until_ready()
-        while not self.bot.is_closed():
-            await asyncio.sleep(30)
-            print('saving leaderboard')
-            self.saveLeaderboard()
-
-    def saveLeaderboard(self):
-        with open(self.leaderBoardPath, '+w') as file:
-            file.write(json.dumps(self.leaderBoard))

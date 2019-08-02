@@ -1,8 +1,8 @@
 import discord
 from discord.ext import commands
 
-from db.roleReactionRepo import saveServer, createRoleReaction, getServerById, getReactionRoleByServerAndReaction, \
-    EntityNotFound
+from db.roleReactionRepo import saveServer, createRoleReaction, getServerById, getReactionRoleByServerAndReaction
+from db.db import EntityNotFound
 
 
 class RoleReaction(commands.Cog):
@@ -38,8 +38,10 @@ class RoleReaction(commands.Cog):
         serverId = str(payload.guild_id)
         serverDb = getServerById(serverId)
         if str(payload.channel_id) == serverDb.channel_id:
-            emoji = str(payload.emoji.id) if payload.emoji.id is not None else payload.emoji.name
-            serverReactionRole = getReactionRoleByServerAndReaction(serverId, emoji)
+            emoji = str(
+                payload.emoji.id) if payload.emoji.id is not None else payload.emoji.name
+            serverReactionRole = getReactionRoleByServerAndReaction(
+                serverId, emoji)
             if serverReactionRole is not None:
                 server = self.bot.get_guild(int(serverDb.id))
                 user = server.get_member(payload.user_id)
@@ -52,8 +54,10 @@ class RoleReaction(commands.Cog):
         serverId = str(payload.guild_id)
         serverDb = getServerById(serverId)
         if str(payload.channel_id) == serverDb.channel_id:
-            emoji = str(payload.emoji.id) if payload.emoji.id is not None else payload.emoji.name
-            serverReactionRole = getReactionRoleByServerAndReaction(serverId, emoji)
+            emoji = str(
+                payload.emoji.id) if payload.emoji.id is not None else payload.emoji.name
+            serverReactionRole = getReactionRoleByServerAndReaction(
+                serverId, emoji)
             if serverReactionRole is not None:
                 server = self.bot.get_guild(int(serverDb.id))
                 user = server.get_member(payload.user_id)

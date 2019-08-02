@@ -17,6 +17,10 @@ print(DB_URL)
 Base = declarative_base()
 
 
+class EntityNotFound(Exception):
+    """Entity was not found"""
+    pass
+
 def getEngine():
     counter = 0
     counter_max = 20
@@ -49,6 +53,14 @@ def initDb():
     if recreate:
         Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
+
+
+class User(Base):
+    __tablename__ = 'users'
+    id = Column(String, primary_key=True)
+    message_count = Column(Integer)
+    karma = Column(Integer)
+    name = Column(String(50))
 
 
 class Server(Base):

@@ -1,9 +1,4 @@
-from db.db import Session, Server, RoleReaction
-
-
-class EntityNotFound(Exception):
-    """Entity was not found"""
-    pass
+from db.db import Session, Server, RoleReaction, EntityNotFound
 
 
 def saveServer(serverId: str, channelId: str):
@@ -23,7 +18,8 @@ def createRoleReaction(serverId: str, reaction: str, role: str):
     if server is None:
         raise EntityNotFound
 
-    roleReaction = RoleReaction(reaction=reaction, server_id=serverId, role=role)
+    roleReaction = RoleReaction(
+        reaction=reaction, server_id=serverId, role=role)
     session.add(roleReaction)
     session.commit()
 
