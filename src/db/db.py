@@ -3,6 +3,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from util.params import getEnvVariable
+from util.utilService import extractBoolFromString
 import psycopg2
 import time
 import sys
@@ -46,7 +47,7 @@ def getEngine():
 
 def initDb():
     try:
-        recreate = getEnvVariable("RECREATE_DB")
+        recreate = extractBoolFromString(getEnvVariable("RECREATE_DB"))
     except:
         recreate = False
 

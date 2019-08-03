@@ -14,7 +14,17 @@ def createRoleReaction(serverId: str, reaction: str, role: str):
     session.commit()
 
 
-def getReactionRoleByServerAndReaction(serverId: str, reaction: str):
-    session = Session()
+def removeRoleReaction(serverId: str, reaction: str):
+    ses = Session()
+    reaction = getReactionRoleByServerAndReaction(serverId, reaction, ses)
+    ses.delete(reaction)
+    ses.commit()
+
+
+def getReactionRoleByServerAndReaction(serverId: str, reaction: str, session=Session()):
     return session.query(RoleReaction).filter(serverId == RoleReaction.server_id,
                                               RoleReaction.reaction == reaction).first()
+
+
+def getReactionRoleByServer(serverId: str, session=Session()):
+    return session.query(RoleReaction).filter(serverId == RoleReaction.server_id,).all()
