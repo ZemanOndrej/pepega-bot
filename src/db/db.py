@@ -21,6 +21,7 @@ class EntityNotFound(Exception):
     """Entity was not found"""
     pass
 
+
 def getEngine():
     counter = 0
     counter_max = 20
@@ -66,9 +67,20 @@ class User(Base):
 class Server(Base):
     __tablename__ = 'servers'
     id = Column(String, primary_key=True)
-    channel_id = Column(String(50))
+    role_reaction_channel_id = Column(String(50))
+    prefix = Column(String(10))
     roleReactions = relationship(
         "RoleReaction", cascade="all,delete", backref='server', lazy='dynamic')
+    karamEmotes = relationship(
+        "KarmaEmote", cascade="all,delete", backref='server', lazy='dynamic')
+
+
+class KarmaEmote(Base):
+    __tablename__ = 'karma_emotes'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    reaction = Column(String(50))
+    karmaChange = Column(Integer)
+    server_id = Column(String(50), ForeignKey('servers.id'))
 
 
 class RoleReaction(Base):

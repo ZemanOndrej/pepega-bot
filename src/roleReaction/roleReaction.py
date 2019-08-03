@@ -1,8 +1,10 @@
 import discord
 from discord.ext import commands
 
-from db.roleReactionRepo import saveServer, createRoleReaction, getServerById, getReactionRoleByServerAndReaction
+from db.roleReactionRepo import createRoleReaction, getReactionRoleByServerAndReaction
 from db.db import EntityNotFound
+from util.utilService import extractEmoteFromMessage, getEmojiIdFromPayloadEmoji
+from db.serverRepo import saveServer, getServerById
 
 
 class RoleReaction(commands.Cog):
@@ -20,11 +22,11 @@ class RoleReaction(commands.Cog):
                 The reactionRole channel is set to `#{channel}`
             """)
 
-    @commands.command(name="roleReaction")
+    @commands.command(name="addRoleReaction")
     async def addRoleReaction(self, ctx, role: str, reaction):
         try:
             createRoleReaction(serverId=str(ctx.message.guild.id), role=role.replace('<@&', '').replace('>', ''),
-                               reaction=extractEmote(reaction))
+                               reaction=extractEmoteFromMessage(reaction))
         except EntityNotFound:
             return await ctx.send(
                 f"""
@@ -37,12 +39,12 @@ class RoleReaction(commands.Cog):
     async def onReactionAdd(self, payload: discord.RawReactionActionEvent):
         serverId = str(payload.guild_id)
         serverDb = getServerById(serverId)
-        if str(payload.channel_id) == serverDb.channel_id:
-            emoji = str(
-                payload.emoji.id) if payload.emoji.id is not None else payload.emoji.name
+        if serverDb is not None and str(payload.channel_id) == serverDb.role_reaction_channel_id:
+            emoji = getEmojiIdFromPayloadEmoji(payload.emoji)
             serverReactionRole = getReactionRoleByServerAndReaction(
                 serverId, emoji)
             if serverReactionRole is not None:
+
                 server = self.bot.get_guild(int(serverDb.id))
                 user = server.get_member(payload.user_id)
                 role = server.get_role(int(serverReactionRole.role))
@@ -53,9 +55,9 @@ class RoleReaction(commands.Cog):
     async def onReactionRemove(self, payload: discord.RawReactionActionEvent):
         serverId = str(payload.guild_id)
         serverDb = getServerById(serverId)
-        if str(payload.channel_id) == serverDb.channel_id:
-            emoji = str(
-                payload.emoji.id) if payload.emoji.id is not None else payload.emoji.name
+        if serverDb is not None and str(payload.channel_id) == serverDb.role_reaction_channel_id:
+            emoji = getEmojiIdFromPayloadEmoji(payload.emoji)
+
             serverReactionRole = getReactionRoleByServerAndReaction(
                 serverId, emoji)
             if serverReactionRole is not None:
@@ -64,12 +66,3 @@ class RoleReaction(commands.Cog):
                 role = server.get_role(int(serverReactionRole.role))
                 if role in user.roles:
                     await user.remove_roles(role, atomic=True)
-
-
-def extractEmote(reaction):
-    splitStr = reaction.split(':')
-    if len(splitStr) > 1:
-        emote = splitStr[2].replace('>', '')
-    else:
-        emote = splitStr[0]
-    return emote

@@ -1,15 +1,5 @@
 from db.db import Session, Server, RoleReaction, EntityNotFound
-
-
-def saveServer(serverId: str, channelId: str):
-    session = Session()
-    server = getServerById(serverId, session)
-    if server is None:
-        server = Server(id=serverId, channel_id=channelId)
-        session.add(server)
-    else:
-        setattr(server, 'channel_id', channelId)
-    session.commit()
+from db.serverRepo import getServerById
 
 
 def createRoleReaction(serverId: str, reaction: str, role: str):
@@ -22,10 +12,6 @@ def createRoleReaction(serverId: str, reaction: str, role: str):
         reaction=reaction, server_id=serverId, role=role)
     session.add(roleReaction)
     session.commit()
-
-
-def getServerById(serverId: str, session=Session()):
-    return session.query(Server).filter(Server.id == serverId).first()
 
 
 def getReactionRoleByServerAndReaction(serverId: str, reaction: str):
