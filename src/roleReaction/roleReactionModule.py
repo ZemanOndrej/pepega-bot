@@ -4,7 +4,7 @@ from db.roleReactionRepo import createRoleReaction, getReactionRoleByServerAndRe
 from db.db import EntityNotFound
 from util.utilService import extractRole, extractEmoteText
 from db.serverRepo import saveServer, getServerById
-from strings.roleReaction import strings
+from strings.en_us import strings
 
 
 class RoleReactionModule(commands.Cog):
@@ -13,6 +13,7 @@ class RoleReactionModule(commands.Cog):
 
     def _prefix(self):
         return self.bot.command_prefix
+
 
     @commands.command(name='roleReaction', help=strings['help_rr_print'])
     async def printRoleReactions(self, ctx):
@@ -32,11 +33,12 @@ class RoleReactionModule(commands.Cog):
         nl = '\n'
         return await ctx.send(
             f"""```
-The reactionRole channel is set to `#{chn}`
+The roleReaction channel is set to `#{chn}`
 
 {nl.join(rString) if len(roleReactions)>0 else "This server doesnt have any roleReactions"}\
             ```""")
 
+# TODO INPUT VALIDATION!!!!!!!!!!!
     @commands.command(name="roleReactionChannel", help=strings['help_rr_channel'])
     async def addServerChannel(self, ctx, channel: discord.TextChannel):
         saveServer(serverId=str(ctx.message.guild.id), channelId=channel.id)
@@ -63,7 +65,7 @@ The reactionRole channel is set to `#{chn}`
     @commands.command(name="removeRoleReaction", help=strings['help_rr_remove'])
     async def removeRoleReaction(self, ctx, reaction):
         removeRoleReaction(str(ctx.guild.id), reaction)
-        return await ctx.send(f"ReactionRole with {reaction} was removed.")
+        return await ctx.send(f"RoleReaction with {reaction} was removed.")
 
     @commands.Cog.listener(name='on_raw_reaction_add')
     async def onReactionAdd(self, payload: discord.RawReactionActionEvent):

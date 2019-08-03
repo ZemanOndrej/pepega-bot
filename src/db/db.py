@@ -72,12 +72,12 @@ class Server(Base):
     prefix = Column(String(10))
     roleReactions = relationship(
         "RoleReaction", cascade="all,delete", backref='server', lazy='dynamic')
-    karamEmotes = relationship(
-        "KarmaEmote", cascade="all,delete", backref='server', lazy='dynamic')
+    karmaReaction = relationship(
+        "KarmaReaction", cascade="all,delete", backref='server', lazy='dynamic')
 
 
-class KarmaEmote(Base):
-    __tablename__ = 'karma_emotes'
+class KarmaReaction(Base):
+    __tablename__ = 'karma_reactions'
     id = Column(Integer, primary_key=True, autoincrement=True)
     reaction = Column(String(50))
     karmaChange = Column(Integer)

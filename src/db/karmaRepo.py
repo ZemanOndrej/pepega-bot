@@ -1,16 +1,32 @@
 
-from db.db import Session, Server, KarmaEmote, EntityNotFound, User
+from db.db import Session, Server, KarmaReaction, EntityNotFound, User
 
 
-def getKarmaEmoteByServerAndReaction(serverId: str, reaction: str, sess=Session()):
-    return sess.query(KarmaEmote).filter(serverId == KarmaEmote.server_id,
-                                         KarmaEmote.reaction == reaction).first()
+def getKarmaReactionByServerAndReaction(serverId: str, reaction: str, ses=Session()):
+    return ses.query(KarmaReaction).filter(serverId == KarmaReaction.server_id,
+                                           KarmaReaction.reaction == reaction).first()
 
 
-def createKarmaEmote(serverId: str, reaction: str, change: int):
+def removeKarmaReaction(serverId: str, kr: str):
+    ses = Session()
+    kr = getKarmaReactionByServerAndReaction(serverId, kr, ses)
+    ses.delete(kr)
+    ses.commit()
+
+
+def getKarmaReactionsByServer(serverId: str, ses=Session()):
+    return ses.query(KarmaReaction).filter(serverId == KarmaReaction.server_id).all()
+
+
+def saveKarmaReaction(serverId: str, reaction: str, change: int):
     session = Session()
+    karmaReaction = getKarmaReactionByServerAndReaction(
+        serverId, reaction, session)
+    if karmaReaction is None:
+        karmaReaction = KarmaReaction(
+            reaction=reaction, server_id=serverId, karmaChange=change)
+        session.add(karmaReaction)
+    else:
+        karmaReaction.karmaChange = change
 
-    karmaEmote = KarmaEmote(
-        reaction=reaction, server_id=serverId, karmaChange=change)
-    session.add(karmaEmote)
     session.commit()
