@@ -2,8 +2,7 @@ from db.db import Session, Server, RoleReaction, EntityNotFound
 from db.serverRepo import getServerById
 
 
-def createRoleReaction(serverId: str, reaction: str, role: str):
-    session = Session()
+def createRoleReaction(serverId: str, reaction: str, role: str,ses=Session()):
     server = getServerById(serverId, session)
     if server is None:
         raise EntityNotFound
@@ -14,17 +13,22 @@ def createRoleReaction(serverId: str, reaction: str, role: str):
     session.commit()
 
 
-def removeRoleReaction(serverId: str, reaction: str):
-    ses = Session()
-    reaction = getReactionRoleByServerAndReaction(serverId, reaction, ses)
+def removeRoleReaction(serverId: str, reaction: str,ses=Session()):
+    reaction = getRoleReactionByServerAndReaction(serverId, reaction, ses)
     ses.delete(reaction)
     ses.commit()
 
 
-def getReactionRoleByServerAndReaction(serverId: str, reaction: str, session=Session()):
-    return session.query(RoleReaction).filter(serverId == RoleReaction.server_id,
+def getRoleReactionByServerAndReaction(serverId: str, reaction: str, ses=Session()):
+    return ses.query(RoleReaction).filter(serverId == RoleReaction.server_id,
                                               RoleReaction.reaction == reaction).first()
 
 
-def getReactionRoleByServer(serverId: str, session=Session()):
-    return session.query(RoleReaction).filter(serverId == RoleReaction.server_id,).all()
+def getRoleReactionByServer(serverId: str, ses=Session()):
+    return ses.query(RoleReaction).filter(serverId == RoleReaction.server_id,).all()
+
+
+def removeAllRoleReactions(serverId:str,ses=Session()):
+    for r in getRoleReactionByServer(serverId,ses):
+        ses.delete(r)
+    ses.commit()

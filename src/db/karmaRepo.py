@@ -13,6 +13,11 @@ def removeKarmaReaction(serverId: str, kr: str):
     ses.delete(kr)
     ses.commit()
 
+def removeAllKarmaReactions(serverId:str,ses=Session()):
+    for k in getKarmaReactionsByServer(serverId,ses):
+        ses.delete(k)
+    ses.commit()
+
 
 def getKarmaReactionsByServer(serverId: str, ses=Session()):
     return ses.query(KarmaReaction).filter(serverId == KarmaReaction.server_id).all()

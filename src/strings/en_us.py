@@ -6,5 +6,7 @@ strings = {
     'help_kr_save': 'Creates/updates karmaReaction \n Format `saveKarmaReaction :emote value`',
     'help_kr_remove': 'Removes karmaReaction \n Format `removeKarmaReaction :emote`',
     'help_kr_print': 'Prints out all karmaReactions',
+    'help_rr_reset': 'Resets all RoleReactions',
+    'help_kr_reset': 'Resets all KarmaReactions',
 
 }

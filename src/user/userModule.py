@@ -2,9 +2,12 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import has_permissions
 from db.userRepo import getUsers, incUserMsgCount, updateUserKarma
-from db.karmaRepo import getKarmaReactionByServerAndReaction, saveKarmaReaction, getKarmaReactionsByServer, removeKarmaReaction
+from db.karmaRepo import getKarmaReactionByServerAndReaction, saveKarmaReaction, getKarmaReactionsByServer, removeKarmaReaction, removeAllKarmaReactions
 from util.utilService import extractEmoteText
+from discord.ext.commands import has_permissions
 from strings.en_us import strings
+import typing
+from emoji import UNICODE_EMOJI
 
 
 class UserModule(commands.Cog):
@@ -20,7 +23,7 @@ class UserModule(commands.Cog):
 
         await ctx.send(f"```{parsedLeaderboard}```")
 
-    @commands.command(name="karmaInfo",help=strings['help_kr_print'])
+    @commands.command(name="karmaInfo", help=strings['help_kr_print'])
     async def karmaInfo(self, ctx):
         karmaReaction = getKarmaReactionsByServer(str(ctx.message.guild.id))
         if len(karmaReaction) == 0:
@@ -31,7 +34,7 @@ class UserModule(commands.Cog):
 {nl.join([f"Reaction {extractEmoteText(x.reaction)} changes your karma by {x.karmaChange}" for x in karmaReaction])}
             ```""")
 
-    @commands.command(name="removeKarmaReaction",help=strings['help_kr_remove'])
+    @commands.command(name="removeKarmaReaction", help=strings['help_kr_remove'])
     async def removeKarmaReaction(self, ctx, reaction):
         removeKarmaReaction(str(ctx.guild.id), reaction)
         return await ctx.send(f"KarmaReaction with {reaction} was removed.")
@@ -40,10 +43,19 @@ class UserModule(commands.Cog):
     async def on_message(self, message):
         incUserMsgCount(message.author)
 
-    @commands.command(name="saveKarmaReaction",help=strings['help_kr_save'])
-    async def addKarmaReaction(self, ctx,  reaction, val: int):
+    @commands.command(name="saveKarmaReaction", help=strings['help_kr_save'])
+    async def addKarmaReaction(self, ctx,  reaction: typing.Union[discord.PartialEmoji, str], val: int):
+        if type(reaction) == str and reaction not in UNICODE_EMOJI:
+            return await ctx.send(f"Invalid Emote")
+
         saveKarmaReaction(str(ctx.message.guild.id), reaction, val)
         return await ctx.send(f'Reaction {reaction} will change your karma by {val}')
+
+    @commands.command(name='resetKarmaReaction', help=strings['help_kr_reset'])
+    @has_permissions(administrator=True)
+    async def resetKarmaReaction(self, ctx):
+        removeAllKarmaReactions(str(ctx.guild.id))
+        return await ctx.send(f"KarmaReaction settings have been reset")
 
     @commands.Cog.listener(name='on_raw_reaction_remove')
     async def onReactionRemove(self, payload: discord.RawReactionActionEvent):
