@@ -23,7 +23,7 @@ class Events(commands.Cog):
             await loggingChannel.send(f"bot has been online for {counter} minutes.")
 
     @commands.Cog.listener(name='on_guild_join')
-    async def onServerJoin(server):
+    async def onServerJoin(self, server):
         saveServer(str(server.id))
 
     @commands.Cog.listener()

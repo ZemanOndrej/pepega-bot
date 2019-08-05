@@ -2,9 +2,9 @@ from db.db import Session, EntityNotFound, User
 from sqlalchemy import desc
 
 
-def getUsers(count=20):
+def getUsers(count=20, page=0):
     ses = Session()
-    return ses.query(User).order_by(desc(User.message_count)).limit(count)
+    return ses.query(User).filter(User.message_count > 0).order_by(desc(User.message_count)).offset(page*count).limit(count)
 
 
 def createUser(userId, name, ses=Session()):
@@ -48,3 +48,8 @@ def updateUserKarma(userId, val, ses=Session()):
         dbUser.karma += val
 
     ses.commit()
+
+
+def getUserCountWithMoreMessages(count):
+    ses = Session()
+    return ses.query(User).filter(User.message_count > count).count()
