@@ -43,14 +43,18 @@ class UserModule(commands.Cog):
             ```""")
 
     @commands.command(name="saveKarmaReaction", help=strings['help_kr_save'])
+    @has_permissions(administrator=True)
     async def addKarmaReaction(self, ctx,  reaction: typing.Union[discord.PartialEmoji, str], value: int):
         if type(reaction) == str and reaction not in UNICODE_EMOJI:
             return await ctx.send(f"Invalid Emote")
+        if value>10 or value<-10:
+            return await ctx.send(f"Invalid value (-10<value<10)")
 
         saveKarmaReaction(str(ctx.message.guild.id), str(reaction), value)
         return await ctx.send(f'Reaction {reaction} will change your karma by {value}')
 
     @commands.command(name="removeKarmaReaction", help=strings['help_kr_remove'])
+    @has_permissions(administrator=True)
     async def removeKarmaReaction(self, ctx, reaction):
         removeKarmaReaction(str(ctx.guild.id), reaction)
         return await ctx.send(f"KarmaReaction with {reaction} was removed.")

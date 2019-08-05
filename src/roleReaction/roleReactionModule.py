@@ -42,6 +42,7 @@ The roleReaction channel is set to `#{chn}`\n
             ```""")
 
     @commands.command(name="roleReactionChannel", help=strings['help_rr_channel'])
+    @has_permissions(administrator=True)
     async def addServerChannel(self, ctx, channel: discord.TextChannel):
         saveServer(serverId=str(ctx.message.guild.id), channelId=channel.id)
         return await ctx.send(
@@ -50,6 +51,7 @@ The roleReaction channel is set to `#{chn}`\n
             """)
 
     @commands.command(name="addRoleReaction", help=strings['help_rr_add'])
+    @has_permissions(administrator=True)
     async def addRoleReaction(self, ctx, role: discord.Role, reaction: typing.Union[discord.PartialEmoji, str]):
 
         if type(reaction) == str and reaction not in UNICODE_EMOJI:
@@ -65,8 +67,8 @@ The roleReaction channel is set to `#{chn}`\n
         if len(list(filter(lambda x: x == role, ctx.message.guild.roles))) == 0:
             return await ctx.send("Invalid Role")
 
-        res =createRoleReaction(serverId=str(ctx.message.guild.id),
-                           role=str(role.id), reaction=str(reaction))
+        res = createRoleReaction(serverId=str(ctx.message.guild.id),
+                                 role=str(role.id), reaction=str(reaction))
         if not res:
             return await ctx.send(f"Reaction {reaction} is already set for @{role} role")
 
@@ -74,6 +76,7 @@ The roleReaction channel is set to `#{chn}`\n
         return await ctx.send(f"Reaction {reaction} was set for @{role} role")
 
     @commands.command(name="removeRoleReaction", help=strings['help_rr_remove'])
+    @has_permissions(administrator=True)
     async def removeRoleReaction(self, ctx, reaction):
         removeRoleReaction(str(ctx.guild.id), reaction)
         return await ctx.send(f"RoleReaction with {reaction} was removed.")

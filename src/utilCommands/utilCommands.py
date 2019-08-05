@@ -16,6 +16,7 @@ class UtilCommands(commands.Cog):
         self.bot = bot
 
     @commands.command(name='countdown')
+    @has_permissions(administrator=True)
     async def countdown(self, ctx, *args):
         countStart = 0
         try:
