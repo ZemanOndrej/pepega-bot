@@ -23,6 +23,10 @@ class UserModule(commands.Cog):
 
         await ctx.send(f"```{parsedLeaderboard}```")
 
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        incUserMsgCount(message.author)
+
     @commands.command(name="karmaInfo", help=strings['help_kr_print'])
     async def karmaInfo(self, ctx):
         karmaReaction = getKarmaReactionsByServer(str(ctx.message.guild.id))
@@ -34,22 +38,18 @@ class UserModule(commands.Cog):
 {nl.join([f"Reaction {extractEmoteText(x.reaction)} changes your karma by {x.karmaChange}" for x in karmaReaction])}
             ```""")
 
+    @commands.command(name="saveKarmaReaction", help=strings['help_kr_save'])
+    async def addKarmaReaction(self, ctx,  reaction: typing.Union[discord.PartialEmoji, str], value: int):
+        if type(reaction) == str and reaction not in UNICODE_EMOJI:
+            return await ctx.send(f"Invalid Emote")
+
+        saveKarmaReaction(str(ctx.message.guild.id), str(reaction), value)
+        return await ctx.send(f'Reaction {reaction} will change your karma by {value}')
+
     @commands.command(name="removeKarmaReaction", help=strings['help_kr_remove'])
     async def removeKarmaReaction(self, ctx, reaction):
         removeKarmaReaction(str(ctx.guild.id), reaction)
         return await ctx.send(f"KarmaReaction with {reaction} was removed.")
-
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        incUserMsgCount(message.author)
-
-    @commands.command(name="saveKarmaReaction", help=strings['help_kr_save'])
-    async def addKarmaReaction(self, ctx,  reaction: typing.Union[discord.PartialEmoji, str], val: int):
-        if type(reaction) == str and reaction not in UNICODE_EMOJI:
-            return await ctx.send(f"Invalid Emote")
-
-        saveKarmaReaction(str(ctx.message.guild.id), reaction, val)
-        return await ctx.send(f'Reaction {reaction} will change your karma by {val}')
 
     @commands.command(name='resetKarmaReaction', help=strings['help_kr_reset'])
     @has_permissions(administrator=True)
