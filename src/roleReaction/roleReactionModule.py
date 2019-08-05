@@ -33,7 +33,7 @@ class RoleReactionModule(commands.Cog):
         for rr in roleReactions:
             role = next(filter(lambda x: x.id == int(rr.role), roles))
             rString.append(
-                f"  Reaction {extractEmoteText(rr.reaction)} is set for <@{role.name}> role")
+                f"  Reaction {extractEmoteText(rr.reaction)} is set for @{role.name} role")
         nl = '\n'
         return await ctx.send(
             f"""```
@@ -65,8 +65,11 @@ The roleReaction channel is set to `#{chn}`\n
         if len(list(filter(lambda x: x == role, ctx.message.guild.roles))) == 0:
             return await ctx.send("Invalid Role")
 
-        createRoleReaction(serverId=str(ctx.message.guild.id),
-                           role=role.id, reaction=str(reaction))
+        res =createRoleReaction(serverId=str(ctx.message.guild.id),
+                           role=str(role.id), reaction=str(reaction))
+        if not res:
+            return await ctx.send(f"Reaction {reaction} is already set for @{role} role")
+
         print(f'role reaction {role}/{reaction} id in {ctx.message.guild}')
         return await ctx.send(f"Reaction {reaction} was set for @{role} role")
 
