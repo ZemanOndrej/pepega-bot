@@ -25,7 +25,7 @@ class TicTacToe(commands.Cog):
             {str(game)}type `{self._prefix()}tttplay column(0-{game.xByx - 1}) row(0-{game.xByx - 1})`
                 """
 
-    @commands.command(name="tttaccept")
+    @commands.command(name='tttaccept')
     async def accept(self, ctx):
         if ctx.author not in self.players:
             return await ctx.send(
@@ -38,7 +38,7 @@ class TicTacToe(commands.Cog):
             game.accept()
             return await ctx.send(self.getGameStr(game))
 
-        await ctx.send(f"Player {game.p2} has to accept the game, not you!")
+        await ctx.send(f'Player {game.p2} has to accept the game, not you!')
 
     @commands.command(name='tttforfeit')
     async def forfeit(self, ctx):
@@ -50,7 +50,7 @@ class TicTacToe(commands.Cog):
         game = self.getGameByPlayer(ctx.author)
         self.removePlayers(game)
         if not game.isStarted:
-            return await ctx.send(f"{ctx.author} left the game with {game.p1 if game.p1 != ctx.author else game.p2}.")
+            return await ctx.send(f'{ctx.author} left the game with {game.p1 if game.p1 != ctx.author else game.p2}.')
         await ctx.send(
             f"""
         Player {ctx.author} has forfeited the game. {game.p1 if game.p1 != ctx.author else game.p2} has won.
@@ -72,7 +72,7 @@ class TicTacToe(commands.Cog):
         if game.p2 == ctx.author:
             self.removePlayers(game)
             self.tttList.remove(game)
-        await ctx.send(f"Player {ctx.author} has rejected the TicTacToe game.")
+        await ctx.send(f'Player {ctx.author} has rejected the TicTacToe game.')
 
     @commands.command(name='tttplay')
     async def play(self, ctx, x, y):
@@ -84,19 +84,19 @@ class TicTacToe(commands.Cog):
         game = self.getGameByPlayer(ctx.author)
 
         if not game.isStarted:
-            return await ctx.send("Stahp! game is not started yet.")
+            return await ctx.send('Stahp! game is not started yet.')
 
         if ctx.author != game.nextPlayer:
-            return await ctx.send("Stahp! it's not your turn")
+            return await ctx.send('Stahp! it\'s not your turn')
 
         try:
             xInt = int(x)
             yInt = int(y)
         except:
-            return await ctx.send("Wrong input: example input `.tttplay 0 0`!")
+            return await ctx.send('Wrong input: example input `.tttplay 0 0`!')
 
         if not game.isPositionCorrect(xInt, yInt):
-            return await ctx.send("this position is not correct or free!")
+            return await ctx.send('this position is not correct or free!')
 
         game.playTurn(ctx.author, xInt, yInt)
 
@@ -108,7 +108,7 @@ class TicTacToe(commands.Cog):
     @commands.command(name='tttstart')
     async def start(self, ctx, p2: discord.Member):
         if p2 == self.bot.user:
-            return await ctx.send("Im too :Pepega: for this game.")
+            return await ctx.send('Im too :Pepega: for this game.')
         if p2 == ctx.author:
             return await ctx.send('You cant inv yourself :NotLikeThis:')
 

@@ -25,7 +25,7 @@ class RoleReactionModule(commands.Cog):
         server = getServerById(serverId)
 
         if server.role_reaction_channel_id is None:
-            return await ctx.send(f"RoleReaction is not configured on this server.")
+            return await ctx.send(f'RoleReaction is not configured on this server.')
         chn = self.bot.get_channel(int(server.role_reaction_channel_id))
         roles = ctx.message.guild.roles
         roleReactions = getRoleReactionByServer(serverId)
@@ -33,15 +33,15 @@ class RoleReactionModule(commands.Cog):
         for rr in roleReactions:
             role = next(filter(lambda x: x.id == int(rr.role), roles))
             rString.append(
-                f"  Reaction {extractEmoteText(rr.reaction)} is set for @{role.name} role")
+                f'  Reaction {extractEmoteText(rr.reaction)} is set for @{role.name} role')
         nl = '\n'
         return await ctx.send(
             f"""```
 The roleReaction channel is set to `#{chn}`\n
-{nl.join(rString) if len(roleReactions)>0 else "This server doesnt have any roleReactions"}\
+{nl.join(rString) if len(roleReactions)>0 else 'This server doesnt have any roleReactions'}\
             ```""")
 
-    @commands.command(name="roleReactionChannel", help=strings['help_rr_channel'])
+    @commands.command(name='roleReactionChannel', help=strings['help_rr_channel'])
     @has_permissions(administrator=True)
     async def addServerChannel(self, ctx, channel: discord.TextChannel):
         saveServer(serverId=str(ctx.message.guild.id), channelId=channel.id)
@@ -50,12 +50,12 @@ The roleReaction channel is set to `#{chn}`\n
                 The roleReaction channel is set to `#{channel}`
             """)
 
-    @commands.command(name="addRoleReaction", help=strings['help_rr_add'])
+    @commands.command(name='addRoleReaction', help=strings['help_rr_add'])
     @has_permissions(administrator=True)
     async def addRoleReaction(self, ctx, role: discord.Role, reaction: typing.Union[discord.PartialEmoji, str]):
 
         if type(reaction) == str and reaction not in UNICODE_EMOJI:
-            return await ctx.send(f"Invalid Emote")
+            return await ctx.send(f'Invalid Emote')
 
         server = getServerById(str(ctx.message.guild.id))
         if server.role_reaction_channel_id is None:
@@ -65,27 +65,27 @@ The roleReaction channel is set to `#{chn}`\n
                 """)
 
         if len(list(filter(lambda x: x == role, ctx.message.guild.roles))) == 0:
-            return await ctx.send("Invalid Role")
+            return await ctx.send('Invalid Role')
 
         res = createRoleReaction(serverId=str(ctx.message.guild.id),
                                  role=str(role.id), reaction=str(reaction))
         if not res:
-            return await ctx.send(f"Reaction {reaction} is already set for @{role} role")
+            return await ctx.send(f'Reaction {reaction} is already set for @{role} role')
 
         print(f'role reaction {role}/{reaction} id in {ctx.message.guild}')
-        return await ctx.send(f"Reaction {reaction} was set for @{role} role")
+        return await ctx.send(f'Reaction {reaction} was set for @{role} role')
 
-    @commands.command(name="removeRoleReaction", help=strings['help_rr_remove'])
+    @commands.command(name='removeRoleReaction', help=strings['help_rr_remove'])
     @has_permissions(administrator=True)
     async def removeRoleReaction(self, ctx, reaction):
         removeRoleReaction(str(ctx.guild.id), reaction)
-        return await ctx.send(f"RoleReaction with {reaction} was removed.")
+        return await ctx.send(f'RoleReaction with {reaction} was removed.')
 
     @commands.command(name='resetRoleReaction', help=strings['help_rr_reset'])
     @has_permissions(administrator=True)
     async def resetRoleReaction(self, ctx):
         removeAllRoleReactions(str(ctx.guild.id))
-        return await ctx.send(f"RoleReaction settings have been reset")
+        return await ctx.send(f'RoleReaction settings have been reset')
 
     @commands.Cog.listener(name='on_raw_reaction_add')
     async def onReactionAdd(self, payload: discord.RawReactionActionEvent):

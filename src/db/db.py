@@ -8,11 +8,11 @@ import psycopg2
 import time
 import sys
 
-DB_PORT = getEnvVariable("DB_PORT")
-DB_USER = getEnvVariable("DB_USER")
-DB_PW = getEnvVariable("DB_PW")
-DB_DB = getEnvVariable("DB_DB")
-DB_HOST = getEnvVariable("DB_HOST")
+DB_PORT = getEnvVariable('DB_PORT')
+DB_USER = getEnvVariable('DB_USER')
+DB_PW = getEnvVariable('DB_PW')
+DB_DB = getEnvVariable('DB_DB')
+DB_HOST = getEnvVariable('DB_HOST')
 DB_URL = f'postgresql+psycopg2://{DB_USER}:{DB_PW}@{DB_HOST}:{DB_PORT}/{DB_DB}'
 print(DB_URL)
 Base = declarative_base()
@@ -38,20 +38,20 @@ def getEngine():
             time.sleep(sleep_time)
             if counter == counter_max:
                 print(
-                    f"db is unavailable for {counter_max * sleep_time} seconds, restart the application")
+                    f'db is unavailable for {counter_max * sleep_time} seconds, restart the application')
                 sys.exit(1)
             else:
                 print(
-                    f"({counter}/20) db is unavailable, reconnecting to server in few seconds...")
+                    f'({counter}/20) db is unavailable, reconnecting to server in few seconds...')
 
 
 def initDb():
     try:
-        recreate = extractBoolFromString(getEnvVariable("RECREATE_DB"))
+        recreate = extractBoolFromString(getEnvVariable('RECREATE_DB'))
     except:
         recreate = False
 
-    print(f"DB initialization recreate={recreate}")
+    print(f'DB initialization recreate={recreate}')
     if recreate:
         Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
@@ -71,9 +71,9 @@ class Server(Base):
     role_reaction_channel_id = Column(String(50))
     prefix = Column(String(10))
     roleReactions = relationship(
-        "RoleReaction", cascade="all,delete", backref='server', lazy='dynamic')
+        'RoleReaction', cascade='all,delete', backref='server', lazy='dynamic')
     karmaReaction = relationship(
-        "KarmaReaction", cascade="all,delete", backref='server', lazy='dynamic')
+        'KarmaReaction', cascade='all,delete', backref='server', lazy='dynamic')
 
 
 class KarmaReaction(Base):

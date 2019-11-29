@@ -25,5 +25,5 @@ def extractRole(s):
 def extractEmoteText(s):
     splitStr = s.split(':')
     if len(splitStr) > 1:
-        return f":{splitStr[1]}:"
+        return f':{splitStr[1]}:'
     return splitStr[0]

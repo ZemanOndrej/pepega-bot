@@ -43,7 +43,7 @@ def getUserById(userId: str, session=Session()):
 def updateUserKarma(userId, val, ses=Session()):
     dbUser = getUserById(userId, ses)
     if dbUser is None:
-        raise EntityNotFound("user not found")
+        raise EntityNotFound('user not found')
     else:
         dbUser.karma += val
 

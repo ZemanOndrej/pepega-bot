@@ -17,9 +17,9 @@ class TicTacToeGame:
         self.playerWon = 0
         self.isFinished = False
         self.charLookup = {
-            0: "-",
-            1: "o",
-            2: "x",
+            0: '-',
+            1: 'o',
+            2: 'x',
         }
 
     def isPositionCorrect(self, x: int, y: int):
@@ -32,14 +32,14 @@ class TicTacToeGame:
         return datetime.datetime.now() > self.timeLastTurn + datetime.timedelta(seconds=self.turnTime)
 
     def __str__(self):
-        finStr = ""
+        finStr = ''
         if self.isFinished and self.playerWon != 0:
-            finStr = f"{self.playerWon} won this game!"
+            finStr = f'{self.playerWon} won this game!'
         elif self.isFinished:
-            finStr = "Its a draw :|"
-        gb = ""
+            finStr = 'Its a draw :|'
+        gb = ''
         for row in self.gameBoard:
-            gb = gb + f" {'|'.join(self.charLookup[x] for x in row)} \n"
+            gb = gb + f' {"|".join(self.charLookup[x] for x in row)} \n'
 
         return f"""
     ```

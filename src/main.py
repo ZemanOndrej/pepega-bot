@@ -7,7 +7,7 @@ from user.userModule import UserModule
 from util.params import getEnvVariable
 
 
-bot = commands.Bot(command_prefix=getEnvVariable("DEFAULT_PREFIX"))
+bot = commands.Bot(command_prefix=getEnvVariable('DEFAULT_PREFIX'))
 
 bot.add_cog(Events(bot))
 bot.add_cog(UtilCommands(bot))

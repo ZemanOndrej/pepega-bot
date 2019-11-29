@@ -25,11 +25,11 @@ class UtilCommands(commands.Cog):
             elif len(args) == 1 and args[0].isnumeric():
                 countStart = int(args[0])
         except:
-            return await ctx.send("wrong input")
+            return await ctx.send('wrong input')
         if countStart > 20:
-            return await ctx.send("number is too big!")
+            return await ctx.send('number is too big!')
 
-        await cd(ctx.send, countStart, 1, "countdown has started", "it is finished")
+        await cd(ctx.send, countStart, 1, 'countdown has started', 'it is finished')
 
     @commands.command(name='ping')
     async def ping(self, ctx):
